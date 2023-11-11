@@ -1,0 +1,5 @@
+- yung module po na nag eedit ng rates (daily rates & monthly rates) ng customer
+- yung module po na nag makikita po yng notification kung sino nag attendance
+- tapos po yung log in log out ni admin // done
+- New update po yung pede mag upload ng pics yung admin na makikita ng mga guest customer sa kiosk
+- ratings module- yung makikita po yung mga na rate ni customer about the gym yung satisfaction po yung by star yung pag rarate // done

@@ -1,0 +1,34 @@
+.category-sidebar {
+  width: 200px;
+  height: 500px;
+  background-color: black;
+  text-align: center;
+  margin-top: 105px;
+}
+
+.category-sidebar-title {
+  color: white;
+  font-size: 24px;
+}
+
+.category-item-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.category-item {
+  color: white;
+  padding: 10px 0px;
+  cursor: pointer;
+  text-transform: capitalize;
+  width: 100%;
+  font-weight: bold;
+  font-size: 20px;
+  border-top: 1px solid wheat;
+  border-bottom: 1px solid wheat;
+}
+
+.category-sidebar-container {
+  padding: 10px 0;
+}

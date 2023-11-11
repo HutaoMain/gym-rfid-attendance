@@ -1,0 +1,72 @@
+.navbar {
+  width: 100%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: -3px 10px 5px -6px rgba(0, 0, 0, 0.55);
+  -webkit-box-shadow: -3px 10px 5px -6px rgba(0, 0, 0, 0.55);
+  -moz-box-shadow: -3px 10px 5px -6px rgba(0, 0, 0, 0.55);
+}
+
+.navbar-black-container {
+  width: 100%;
+  height: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-black-content {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.navbar-content-container {
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icon-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.navbar-red-container {
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-links-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar-links {
+  color: black;
+  cursor: pointer;
+}
+
+.navbar-login-btn {
+  width: 100px;
+  height: 35px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.nav-logo {
+  height: 100px;
+  width: auto;
+}

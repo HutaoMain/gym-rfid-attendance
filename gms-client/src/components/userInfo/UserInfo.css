@@ -1,0 +1,58 @@
+/* .userinfo-image {
+  width: 200px;
+  height: 200px;
+}*/
+
+.userinfo-input {
+  outline: none;
+  border: none;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.userinfo-box {
+  width: 300px;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+
+  display: flex;
+
+  flex-direction: column;
+  justify-content: center;
+}
+
+.userinfo-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.userinfo-info-container {
+  margin-bottom: 12px;
+}
+
+.userinfo-info-container span {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.userinfo-timein-button,
+.userinfo-cancel-button {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.userinfo-cancel-button {
+  background-color: #f44336;
+  margin-top: 10px;
+}

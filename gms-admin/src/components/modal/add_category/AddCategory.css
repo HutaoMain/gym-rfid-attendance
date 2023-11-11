@@ -1,0 +1,25 @@
+.add-category {
+  width: 300px;
+  padding: 20px 0;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.add-category-close-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.addcategory-btn-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  justify-content: center;
+  gap: 10px;
+}

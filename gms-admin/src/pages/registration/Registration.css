@@ -1,0 +1,98 @@
+.registration-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: 100vh;
+  width: 100%;
+}
+
+.registration-header {
+  height: 10%;
+  width: 100%;
+  background-color: #0d1c2e;
+
+  display: flex;
+
+  justify-content: center;
+  flex-direction: column;
+  color: #ffffff;
+}
+
+.registration-header h1,
+h3 {
+  padding: 0 50px;
+}
+
+.registration-header h1 {
+  font-size: 30px;
+  margin: 0;
+}
+
+/* .registration-title {
+  margin-bottom: 10px;
+} */
+
+.registrationtitle h1 {
+  font-size: 25px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.registration-form {
+  width: 80%;
+  max-width: 400px;
+}
+
+.registration-input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.registration-input-group label {
+  font-size: 16px;
+  font-weight: normal;
+  color: #333333;
+  padding-bottom: 5px;
+}
+
+.registration-input-group input,
+.registration-input-group select {
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+.registration-button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6%;
+}
+
+.registration-button-group button {
+  height: 40px;
+  width: 45%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.registration-button-group .registration-link {
+  height: 40px;
+  width: 45%;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+}
+
+.registration-button-group button[type="submit"] {
+  background-color: #00a0ff;
+}
+
+.registration-button-group button[type="button"] {
+  background-color: #ffffff;
+}
