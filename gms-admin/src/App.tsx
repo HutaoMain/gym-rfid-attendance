@@ -12,6 +12,8 @@ import Product from "./pages/product/Product";
 import Order from "./pages/order/Order";
 import Category from "./pages/category/Category";
 import Attendance from "./pages/attendance/Attendance";
+import OTP from "./components/otp/OTP";
+import Sales from "./pages/sales/Sales";
 
 function App() {
   const user = useAuthStore((state) => state.user);
@@ -48,6 +50,11 @@ function App() {
           <Route
             path="/attendance"
             element={user ? <Attendance /> : <Navigate to="/login" />}
+          />
+          <Route path="/otp/:email" element={<OTP />} />
+          <Route
+            path="/sales"
+            element={user ? <Sales /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

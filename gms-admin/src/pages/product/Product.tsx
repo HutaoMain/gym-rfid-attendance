@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "@mui/icons-material";
-import { ProductInterface } from "../../Types";
+import { CategoryInterface, ProductInterface } from "../../Types";
 import AddProduct from "../../components/modal/add_product/AddProduct";
 import UpdateProduct from "../../components/modal/update_product/UpdateProduct";
 
@@ -21,6 +21,8 @@ const Product = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [openUpdate, setOpenUpdate] = useState<boolean>(false);
   const [productId, setProductId] = useState<string>("");
+  const [categoryData, setCategoryData] = useState<CategoryInterface[]>();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const toggleModal = () => {
     setOpen(false);
@@ -54,10 +56,22 @@ const Product = () => {
     }
   };
 
+  useEffect(() => {
+    const fetch = async () => {
+      const res = await axios.get(
+        `${import.meta.env.VITE_APP_API_URL}/api/category/list`
+      );
+      setCategoryData(res.data);
+    };
+    fetch();
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState<string>("");
 
-  const filteredData = data?.filter((item) =>
-    item.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data?.filter(
+    (item) =>
+      item.productName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      item.category.toLowerCase().includes(selectedCategory)
   );
 
   return (
@@ -116,6 +130,22 @@ const Product = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+          <select
+            style={{
+              height: "75px",
+              width: "100%",
+              borderRadius: "10px",
+              fontSize: "18px",
+            }}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            {categoryData?.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.categoryName}
+              </option>
+            ))}
+          </select>
         </div>
         <Table className="product-table">
           <TableHead className="product-tablehead">
@@ -154,6 +184,7 @@ const Product = () => {
                 <TableCell align="center">{item.description}</TableCell>
                 <TableCell align="center">{item.price}</TableCell>
                 <TableCell align="center">{item.quantity}</TableCell>
+
                 <TableCell align="center">
                   <button
                     className="product-btn"

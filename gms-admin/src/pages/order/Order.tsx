@@ -14,6 +14,7 @@ import moment from "moment";
 import DatePicker from "react-datepicker";
 import ViewOrder from "../../components/modal/view_orders/ViewOrder";
 import { OrderInterface } from "../../Types";
+import { toast } from "react-toastify";
 
 const Order = () => {
   const [orderData, setOrderData] = useState<OrderInterface[]>([]);
@@ -40,6 +41,16 @@ const Order = () => {
           status: newStatus,
         }
       );
+      toast.success("Sucessfully updated the status!", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      window.location.reload();
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -70,10 +81,6 @@ const Order = () => {
       return false;
     });
   }, [orderData, startDate, endDate]);
-
-  // const totalPrices = filteredData?.reduce((total, order) => {
-  //   return total + order.totalPrice;
-  // }, 0);
 
   const toggleModal = (id: string) => {
     setOrderId(id);
@@ -112,10 +119,6 @@ const Order = () => {
             isClearable
           />
         </div>
-        {/* <label htmlFor="">
-          Total Income:
-          <span> ₱{totalPrices}.00</span>
-        </label> */}
       </div>
       <TableContainer className="product">
         <Table className="product-table">
@@ -151,10 +154,11 @@ const Order = () => {
                   <select
                     defaultValue={item.status}
                     onChange={(e) => handleStatusChange(e, item.id)}
+                    disabled={item.status === "Paid"}
                   >
                     <option value="Pending">Pending</option>
-                    <option value="Reject">Reject</option>
-                    <option value="Approve">Approve</option>
+                    <option value="Void">Void</option>
+                    <option value="Paid">Paid</option>
                   </select>
                 </TableCell>
 

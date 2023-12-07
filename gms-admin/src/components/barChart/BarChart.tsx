@@ -16,29 +16,36 @@ ChartJs.register(CategoryScale, LinearScale, BarElement, Legend, Tooltip);
 
 const BarChart = () => {
   const [chartData, setChartData] = useState<totalPricePerMonthInterface[]>([]);
+  const [filter, setFilter] = useState("monthly");
 
   const { data } = useQuery<totalPricePerMonthInterface[]>({
-    queryKey: ["barChart"],
+    queryKey: ["barChart", filter], // Separate "barChart" and filter as distinct elements
     queryFn: () =>
       axios
         .get(
-          `${import.meta.env.VITE_APP_API_URL}/api/order/total-sales-per-month`
+          `${
+            import.meta.env.VITE_APP_API_URL
+          }/api/order/total-sales-per-${filter}`
         )
         .then((res) => res.data),
   });
 
-  console.log(chartData);
+  console.log("here is the data: ", data);
 
   useEffect(() => {
     setChartData(data || []);
-  }, [data]);
+  }, [data, filter]);
+
+  const handleChangeFilter = (newFilter: string) => {
+    setFilter(newFilter);
+  };
 
   const graph = {
-    labels: chartData?.map((item) => item.orderDate),
+    labels: chartData?.map((item) => item.date),
     datasets: [
       {
-        label: "Sold per month",
-        data: chartData?.map((item) => item.totalPrice),
+        label: `Sold per ${filter}`,
+        data: chartData?.map((item) => item.totalSales),
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(255, 159, 64, 0.2)",
@@ -69,13 +76,24 @@ const BarChart = () => {
   return (
     <div
       style={{
-        width: "50%",
-        height: "300px",
-        padding: "20px",
-        border: "3px solid gray",
+        width: "100%",
+        height: "500px",
+        marginBottom: "200px",
       }}
     >
-      <Bar data={graph} options={barOptions} />
+      <div style={{ marginBottom: "20px" }}>
+        <label>Select Sales Filter:</label>
+        <select
+          value={filter}
+          onChange={(e) => handleChangeFilter(e.target.value)}
+        >
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div style={{ padding: "20px", border: "3px solid gray" }}>
+        <Bar data={graph} options={barOptions} />
+      </div>
     </div>
   );
 };

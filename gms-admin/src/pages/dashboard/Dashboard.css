@@ -1,6 +1,7 @@
 .dashboard {
   width: 100vw;
-  height: 100vh;
+  max-height: 100vh;
+  height: 100%;
 }
 
 .dashboard-container {
@@ -12,10 +13,6 @@
   display: flex;
   justify-content: center;
   gap: 10px;
-  /* display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: center; */
 }
 
 .total-sales-container {

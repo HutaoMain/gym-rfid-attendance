@@ -17,6 +17,8 @@ const Login = () => {
 
   const [errors, setErrors] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [forgotPasswordLoading, setForgotPasswordLoading] =
+    useState<boolean>(false);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -42,6 +44,29 @@ const Login = () => {
       setLoading(false);
       console.log(err);
       setErrors("Incorrect email or password.");
+    }
+  };
+
+  const handleForgotPasswordNavigation = async () => {
+    if (credentials.email === "") {
+      alert(
+        "Please enter your email in the email input to proceed with the forgot password process."
+      );
+    } else {
+      setForgotPasswordLoading(true);
+      try {
+        await axios.post(
+          `${import.meta.env.VITE_APP_API_URL}/api/email/send-otp`,
+          {
+            email: credentials.email,
+          }
+        );
+        setForgotPasswordLoading(false);
+        navigate(`/otp/${credentials.email}`);
+      } catch (error) {
+        console.log(error);
+        setForgotPasswordLoading(false);
+      }
     }
   };
 
@@ -75,6 +100,11 @@ const Login = () => {
               placeholder="Enter your password"
               onChange={onChangeHandler}
             />
+          </div>
+          <div className="login-forgot-password">
+            <span onClick={handleForgotPasswordNavigation}>
+              {forgotPasswordLoading ? "Please wait.. " : "Forgot Password?"}
+            </span>
           </div>
           {errors && (
             <div style={{ padding: "5px 0" }}>

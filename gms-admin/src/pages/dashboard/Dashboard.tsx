@@ -18,6 +18,10 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="dashboard-container">
         <BarChart />
+      </div>
+
+      <div className="dashboard-container">
+        <ProductRating />
         <div className="total-sales-container">
           <h1>TOTAL SALES</h1>
           <div className="total-sales">
@@ -25,9 +29,6 @@ const Dashboard = () => {
             <b style={{ fontSize: "80px" }}>{data}</b>
           </div>
         </div>
-      </div>
-      <div className="dashboard-container">
-        <ProductRating />
       </div>
     </div>
   );

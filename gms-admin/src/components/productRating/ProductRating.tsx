@@ -47,6 +47,7 @@ const ProductRating = () => {
         display: "flex",
         alignItems: "center",
         flexDirection: "column",
+        width: "60%",
       }}
     >
       <h1 style={{ margin: "0px", padding: "0px" }}>Rating</h1>

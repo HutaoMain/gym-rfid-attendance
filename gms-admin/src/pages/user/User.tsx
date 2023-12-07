@@ -16,6 +16,7 @@ import moment from "moment";
 import { Search } from "@mui/icons-material";
 import { UserInterface } from "../../Types";
 import AddUser from "../../components/modal/add_user/AddUser";
+import { toast } from "react-toastify";
 
 const User = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -39,6 +40,33 @@ const User = () => {
       item.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.firstName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const onChangeSuscription = async (
+    userRfid: string,
+    subscription: string
+  ) => {
+    try {
+      await axios.put(
+        `${
+          import.meta.env.VITE_APP_API_URL
+        }/api/user/changeSubscription/${userRfid}`,
+        {
+          subscription: subscription,
+        }
+      );
+      toast.success("Sucessfully update the subscription!", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="user">
@@ -121,6 +149,9 @@ const User = () => {
               <TableCell align="center">
                 <span className="text-white font-bold">Date Created</span>
               </TableCell>
+              <TableCell align="center">
+                <span className="text-white font-bold">Subscription</span>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody className="assessment-tablebody">
@@ -134,6 +165,19 @@ const User = () => {
                 <TableCell align="center">{item.address}</TableCell>
                 <TableCell align="center">
                   {moment(item.createdAt).format("YYYY-MM-DD")}
+                </TableCell>
+                <TableCell align="center">
+                  <select
+                    defaultValue={item.subscription}
+                    style={{ width: "200px" }}
+                    onChange={(e) =>
+                      onChangeSuscription(item.rfid, e.target.value)
+                    }
+                  >
+                    <option value="No subscription">No subscription</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Daily">Daily</option>
+                  </select>
                 </TableCell>
               </TableRow>
             ))}

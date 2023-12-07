@@ -2,9 +2,18 @@ import "./Navbar.css";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import useAuthStore from "../../zustand/AuthStore";
+import { useState } from "react";
+import { Dialog, DialogContent } from "@mui/material";
+import UploadImage from "../modal/uploade_image/UploadImage";
 
 const Navbar = () => {
+  const [open, setOpen] = useState<boolean>(false);
   const clearUser = useAuthStore((state) => state.clearUser);
+
+  const toggleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div className="navbar">
       <div className="navbar-container">
@@ -28,11 +37,23 @@ const Navbar = () => {
           <Link to="/attendance" style={{ textDecoration: "none" }}>
             <span className="navbar-links">ATTENDANCE </span>
           </Link>
+          <Link to="/sales" style={{ textDecoration: "none" }}>
+            <span className="navbar-links">SALES </span>
+          </Link>
+
+          <span className="navbar-links" onClick={() => setOpen(true)}>
+            SCREEN SAVER
+          </span>
         </div>
         <button className="navbar-logout" onClick={clearUser}>
           Logout
         </button>
       </div>
+      <Dialog open={open} onClose={toggleClose}>
+        <DialogContent>
+          <UploadImage />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

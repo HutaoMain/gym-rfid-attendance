@@ -109,3 +109,11 @@ h3 {
   background-color: #ffffff;
   width: 100%;
 }
+
+.login-forgot-password {
+  padding: 5px 0 8px 0;
+}
+
+.login-forgot-password span {
+  cursor: pointer;
+}

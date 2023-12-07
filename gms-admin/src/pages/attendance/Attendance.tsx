@@ -8,10 +8,12 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useQuery } from "react-query";
-import { useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 // import moment from "moment";
 import { Search } from "@mui/icons-material";
 import { IAttendance } from "../../Types";
+import moment from "moment";
+import DatePicker from "react-datepicker";
 
 const Attendance = () => {
   const { data } = useQuery<IAttendance[]>({
@@ -22,16 +24,79 @@ const Attendance = () => {
         .then((res) => res.data),
   });
 
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  if (data && data.length > 0) {
+    data.sort(
+      (a, b) =>
+        new Date(b.attendanceDate).getTime() -
+        new Date(a.attendanceDate).getTime()
+    );
+  }
 
-  const filteredData = data?.filter(
-    (item) =>
-      item.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [filteredDataCount, setFilteredDataCount] = useState<number>(0);
+
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setEndDate(date);
+  };
+
+  const filteredData = useMemo(() => {
+    return data?.filter((order) => {
+      const orderDate = moment(order.attendanceDate, "YYYY-MM-DD hh:mm A");
+
+      // Check if the orderDate falls within the selected date range
+      const isDateInRange =
+        startDate &&
+        endDate &&
+        orderDate.isBetween(
+          moment(startDate).startOf("day"),
+          moment(endDate).endOf("day"),
+          "day",
+          "[]"
+        );
+
+      // Check if the search term matches the first name or last name
+      const isSearchMatch =
+        order.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // Return true if either date or search term matches
+      return isDateInRange && isSearchMatch;
+    });
+  }, [data, startDate, endDate, searchTerm]);
+
+  useEffect(() => {
+    // Update the filtered data count whenever filteredData changes
+    setFilteredDataCount(filteredData?.length || 0);
+  }, [startDate, endDate, searchTerm]);
 
   return (
     <div className="user">
+      <div style={{ display: "flex", paddingTop: "20px" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span>Start Date: </span>
+          <DatePicker
+            selected={startDate}
+            onChange={handleStartDateChange}
+            dateFormat="yyyy-MM-dd"
+            isClearable
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span>End Date: </span>
+          <DatePicker
+            selected={endDate}
+            onChange={handleEndDateChange}
+            dateFormat="yyyy-MM-dd"
+            isClearable
+          />
+        </div>
+      </div>
       <TableContainer
         style={{
           display: "flex",
@@ -103,6 +168,16 @@ const Attendance = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          padding: "20px 500px 20px 0",
+          justifyContent: "flex-end",
+        }}
+      >
+        {filteredDataCount} {filteredDataCount === 1 ? "result" : "results"}
+      </div>
     </div>
   );
 };

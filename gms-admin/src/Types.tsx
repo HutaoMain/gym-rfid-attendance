@@ -32,6 +32,7 @@ export interface UserInterface {
   gender: string;
   address: string;
   createdAt: string;
+  subscription: string;
 }
 
 export interface OrderInterface {
@@ -43,8 +44,8 @@ export interface OrderInterface {
 }
 
 export interface totalPricePerMonthInterface {
-  totalPrice: number;
-  orderDate: string;
+  date: number;
+  totalSales: string;
 }
 
 export interface IAttendance {
@@ -52,4 +53,19 @@ export interface IAttendance {
   lastName: string;
   firstName: string;
   attendanceDate: string;
+}
+
+export interface ISales {
+  product: {
+    id: string;
+    productName: string;
+    productImage: string;
+    description: string;
+    price: number;
+    quantity: number;
+    category: string;
+  };
+  sold: number;
+  totalPriceSolds: number;
+  orderDate: string;
 }
