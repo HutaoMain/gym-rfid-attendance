@@ -44,9 +44,16 @@ public class UserController {
         return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
     }
 
+
+    @PutMapping("/changeSubscription/{rfid}")
+    public ResponseEntity<String> updateSubscription(@PathVariable("rfid") String rfid, @RequestBody User user) {
+        userService.updateSubscription(rfid, user);
+        return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
+    }
+
     @GetMapping("/rfid/{rfid}")
     public ResponseEntity<User> getUserByRfid(@PathVariable("rfid") String rfid) {
-       User user =  userService.getUserByRfid(rfid);
+        User user = userService.getUserByRfid(rfid);
         return ResponseEntity.ok(user);
     }
 

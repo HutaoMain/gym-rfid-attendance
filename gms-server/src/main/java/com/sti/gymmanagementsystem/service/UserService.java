@@ -17,16 +17,6 @@ public class UserService {
     UserRepository userRepository;
 
     public User registerUser(User user) {
-//        User userByEmail = userRepository.findByEmail(user.getEmail());
-
-//        if(userByEmail != null){
-//            log.warn("Username is already existing");
-//            return null;
-//        }
-
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
-//        String encodedPassword = encoder.encode(user.getPassword());
-//        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
@@ -56,6 +46,12 @@ public class UserService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(16);
         String encodedPassword = encoder.encode(user.getPassword());
         setUser.setPassword(encodedPassword);
+        userRepository.save(setUser);
+    }
+
+    public void updateSubscription(String rfid, User user) {
+        User setUser = userRepository.findByRfid(rfid);
+        setUser.setSubscription(user.getSubscription());
         userRepository.save(setUser);
     }
 

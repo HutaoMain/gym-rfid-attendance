@@ -1,9 +1,10 @@
 package com.sti.gymmanagementsystem.controller;
 
-import com.sti.gymmanagementsystem.dto.OrderDto;
+import com.sti.gymmanagementsystem.dto.ProductSalesDto;
 import com.sti.gymmanagementsystem.model.Order;
 import com.sti.gymmanagementsystem.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,9 @@ public class OrderController {
     @Autowired
     OrderService orderService;
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<String> createOrder(@RequestBody OrderDto orderDto) {
-        orderService.createOrder(orderDto);
+    @PostMapping("/create")
+    public ResponseEntity<String> createOrder(@RequestBody Order order) {
+        orderService.createOrder(order);
         return ResponseEntity.ok("successfully ordered!");
     }
 
@@ -34,12 +35,6 @@ public class OrderController {
     ResponseEntity<List<Order>> getOrderList() {
         List<Order> orderList = orderService.getAllOrder();
         return ResponseEntity.ok(orderList);
-    }
-
-    @PutMapping(value = "/uploadReceipt/{id}")
-    public ResponseEntity<String> uploadReceipt(@PathVariable String id, @RequestBody Order order) {
-        orderService.uploadReceipt(id, order);
-        return ResponseEntity.ok("successfully upload receipt!");
     }
 
     @PutMapping("/updateStatus/{id}")
@@ -59,8 +54,25 @@ public class OrderController {
         return orderService.getTotalPriceByStatus();
     }
 
-    @GetMapping("/total-sales-per-month")
-    List<Map<String, Object>> getTotalSalesPerMonth() {
-        return orderService.getTotalSalesPerMonth();
+    @GetMapping("/total-sales-per-{filter}")
+    public List<Map<String, Object>> getTotalSalesPer(@PathVariable String filter) {
+        return orderService.getTotalSalesPer(filter);
+    }
+
+
+    @GetMapping("/weekly")
+    public ResponseEntity<List<ProductSalesDto>> getProductSalesDataWeekly() {
+        List<ProductSalesDto> productSalesData = orderService.getProductSalesBetweenDates();
+        return ResponseEntity.ok(productSalesData);
+    }
+
+    @GetMapping("/salesSummary")
+    public ResponseEntity<Map<String, Double>> getSalesSummary() {
+        try {
+            Map<String, Double> salesSummary = orderService.getSalesSummary();
+            return new ResponseEntity<>(salesSummary, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

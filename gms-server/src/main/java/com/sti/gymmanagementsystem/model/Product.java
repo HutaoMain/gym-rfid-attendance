@@ -24,8 +24,8 @@ public class Product {
     private Integer quantity;
 
     private String category;
-//
-//    private Integer sold = 0;
+
+    private Integer sold = 0;
 //
 //    private String reason;
 }

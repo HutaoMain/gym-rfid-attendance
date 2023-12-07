@@ -22,6 +22,8 @@ public class User {
 
     private String lastName;
 
+    private String subscription;
+
     private String firstName;
 
     private String contactNumber;
