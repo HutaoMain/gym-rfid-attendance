@@ -2,9 +2,19 @@
   width: 330px;
 }
 
+.checkout-product {
+  border: 2px solid black;
+  padding: 20px;
+
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
 .checkout-image {
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
 }
 
@@ -13,4 +23,20 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+}
+
+.checkout-quantity-btn-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkout-quantity-btn {
+  display: flex;
+  align-items: center;
+}
+
+.checkout-btn {
+  cursor: pointer;
 }

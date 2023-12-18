@@ -32,6 +32,7 @@ export interface UserInterface {
   address: string;
   createdAt: string;
   imageUrl: string;
+  subscription: string;
 }
 
 export interface OrderInterface {

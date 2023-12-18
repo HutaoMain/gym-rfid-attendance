@@ -1,6 +1,6 @@
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.jpg";
 import useAuthStore from "../../zustand/AuthStore";
 import { useState } from "react";
 import { Dialog, DialogContent } from "@mui/material";

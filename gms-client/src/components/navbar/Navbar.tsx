@@ -43,9 +43,21 @@ const Navbar = () => {
               color="error"
               onClick={showDrawer}
             >
-              <ShoppingCart sx={{ color: "black" }} />
+              <ShoppingCart sx={{ color: "black", fontSize: "35px" }} />
             </Badge>
-            <button onClick={toggleLogInAttendance}>Time in</button>
+            <button
+              style={{
+                fontSize: "19px",
+                backgroundColor: "transparent",
+                border: "2px solid #3A5311",
+                padding: "10px 30px",
+                borderRadius: "10px",
+                cursor: "pointer",
+              }}
+              onClick={toggleLogInAttendance}
+            >
+              Time in
+            </button>
           </div>
         </div>
       </div>

@@ -6,15 +6,17 @@ import axios from "axios";
 import { Dialog, DialogContent } from "@mui/material";
 import { useState } from "react";
 import ProductRating from "../rating/ProductRating";
+import { AddBox, IndeterminateCheckBox } from "@mui/icons-material";
 
 const Checkout = () => {
   const items = useCartStore((state) => state.items);
   const removeItem = useCartStore((state) => state.removeItem);
-  // const increaseItem = useCartStore((state) => state.increaseItem);
-  // const decreaseItem = useCartStore((state) => state.decreaseItem);
+  const increaseItem = useCartStore((state) => state.increaseItem);
+  const decreaseItem = useCartStore((state) => state.decreaseItem);
   const total = useCartStore((state) => state.total);
 
   const [openRating, setOpenRating] = useState<boolean>(false);
+  const [rfidNumber, setRfidNumber] = useState<string>("");
 
   const itemsToString = JSON.stringify(items);
 
@@ -29,6 +31,7 @@ const Checkout = () => {
       totalPrice: total,
       orderList: itemsToString,
       status: "Pending",
+      rfid: rfidNumber,
     };
 
     try {
@@ -61,6 +64,22 @@ const Checkout = () => {
 
   return (
     <div className="checkout">
+      <label style={{ fontSize: "20px" }}>
+        You need to tap your RFID to checkout your items.
+        <input
+          type="text"
+          value={rfidNumber}
+          className="userinfo-input"
+          style={{
+            border: "1px solid black",
+            height: "40px",
+            fontSize: "18px",
+            paddingLeft: "10px",
+          }}
+          onChange={(e) => setRfidNumber(e.target.value)}
+        />
+      </label>
+
       <h1>Check Out</h1>
       <div className="checkout-container">
         <div>
@@ -87,17 +106,25 @@ const Checkout = () => {
             <label>
               Product Price: <b>{item.price}</b>
             </label>
-            {/* <div className="product-quantity-btn">
-              <IndeterminateCheckBox
-                onClick={() => decreaseItem(item.id)}
-                style={{ cursor: "pointer", fontSize: "20px" }}
-              />
-              <span>{item.quantity}</span>
-              <AddBox
-                onClick={() => increaseItem(item.id)}
-                style={{ cursor: "pointer", fontSize: "20px" }}
-              />
-            </div> */}
+            <div className="checkout-quantity-btn-container">
+              <label>Quantity:</label>
+              <div className="checkout-quantity-btn">
+                {item.quantity >= 2 ? (
+                  <IndeterminateCheckBox
+                    onClick={() => decreaseItem(item.id)}
+                    style={{ cursor: "pointer", fontSize: "20px" }}
+                  />
+                ) : (
+                  <></>
+                )}
+
+                <span>{item.quantity}</span>
+                <AddBox
+                  onClick={() => increaseItem(item.id)}
+                  style={{ cursor: "pointer", fontSize: "20px" }}
+                />
+              </div>
+            </div>
             <label>
               Price: <b>{item.price * item.quantity}</b>
             </label>
@@ -114,9 +141,17 @@ const Checkout = () => {
         TOTAL PRICE: <b>{total}</b>
       </h1>
       <button
-        disabled={total === 0}
+        disabled={total === 0 || !rfidNumber}
         className="checkout-btn"
         onClick={handlePlaceOrder}
+        style={{
+          padding: "20px 40px",
+          border: "none",
+          backgroundColor: "#98BF64",
+          borderRadius: "10px",
+          color: "#ffffff",
+          fontSize: "18px",
+        }}
       >
         Checkout
       </button>

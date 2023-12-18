@@ -41,6 +41,7 @@ export interface OrderInterface {
   orderList: string;
   status: string;
   orderDate: string;
+  rfid: string;
 }
 
 export interface totalPricePerMonthInterface {

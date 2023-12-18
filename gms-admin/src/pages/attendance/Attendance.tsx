@@ -14,6 +14,8 @@ import { Search } from "@mui/icons-material";
 import { IAttendance } from "../../Types";
 import moment from "moment";
 import DatePicker from "react-datepicker";
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const Attendance = () => {
   const { data } = useQuery<IAttendance[]>({
@@ -62,8 +64,9 @@ const Attendance = () => {
 
       // Check if the search term matches the first name or last name
       const isSearchMatch =
-        order.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+        order?.lastName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
+        order?.firstName?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||
+        order?.rfid?.toLowerCase()?.includes(searchTerm.toLowerCase());
 
       // Return true if either date or search term matches
       return isDateInRange && isSearchMatch;
@@ -74,6 +77,27 @@ const Attendance = () => {
     // Update the filtered data count whenever filteredData changes
     setFilteredDataCount(filteredData?.length || 0);
   }, [startDate, endDate, searchTerm]);
+
+  const exportToExcel = () => {
+    const attendanceData =
+      filteredData?.map((item) => ({
+        RFID: item.rfid,
+        Fullname: `${item.lastName}, ${item.firstName}`,
+        AttendanceDate: item.attendanceDate,
+      })) || [];
+
+    const worksheet = XLSX.utils.json_to_sheet(attendanceData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "AttendanceData");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const data = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    saveAs(data, "AttendanceData.xlsx");
+  };
 
   return (
     <div className="user">
@@ -134,7 +158,7 @@ const Attendance = () => {
                 padding: "20px",
               }}
               type="text"
-              placeholder="Search FirstName or LastName"
+              placeholder="Search FirstName, LastName or RFID"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -174,9 +198,36 @@ const Attendance = () => {
           display: "flex",
           padding: "20px 500px 20px 0",
           justifyContent: "flex-end",
+          fontSize: "25px",
         }}
       >
         {filteredDataCount} {filteredDataCount === 1 ? "result" : "results"}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          fontSize: "20px",
+          width: "100%",
+          paddingTop: "20px",
+          gap: "10px",
+        }}
+      >
+        <button
+          style={{
+            width: "200px",
+            height: "50px",
+            border: "none",
+            color: "#ffffff",
+            backgroundColor: "black",
+            borderRadius: "20px",
+            cursor: "pointer",
+          }}
+          onClick={exportToExcel}
+        >
+          Export to Excel
+        </button>
       </div>
     </div>
   );

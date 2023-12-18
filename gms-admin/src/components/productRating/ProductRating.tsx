@@ -39,6 +39,18 @@ const ProductRating = () => {
     ],
   };
 
+  const options = {
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            size: 20, // this will make the labels 20 pixels
+          },
+        },
+      },
+    },
+  };
+
   return (
     <div
       style={{
@@ -51,7 +63,7 @@ const ProductRating = () => {
       }}
     >
       <h1 style={{ margin: "0px", padding: "0px" }}>Rating</h1>
-      <Pie data={pieChartData} />
+      <Pie data={pieChartData} options={options} />
     </div>
   );
 };

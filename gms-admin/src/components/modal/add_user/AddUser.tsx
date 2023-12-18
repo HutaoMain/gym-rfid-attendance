@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./AddUser.css";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { PatternFormat } from "react-number-format";
 
 interface Prop {
   toggleIsOpen: () => void;
@@ -141,11 +142,32 @@ const AddUser = ({ toggleIsOpen }: Prop) => {
 
       <div className="form-group">
         <label htmlFor="password">Contact Number</label>
-        <input
-          type="text"
-          placeholder="Enter your Contact Number"
-          onChange={(e) => setContactNumber(e.target.value)}
-        />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            border: "1px solid black",
+            backgroundColor: "#ffff",
+            paddingLeft: "15px",
+            width: "80%",
+          }}
+        >
+          <span style={{ color: "#BEBEBE", fontSize: "18px" }}>+63</span>
+          <PatternFormat
+            format="##########"
+            mask="_"
+            style={{
+              outline: "none",
+              border: "none",
+              fontSize: "18px",
+              paddingLeft: "5px",
+            }}
+            onValueChange={(values) => {
+              const { value } = values;
+              setContactNumber(value);
+            }}
+          />
+        </div>
       </div>
 
       <div className="form-group">

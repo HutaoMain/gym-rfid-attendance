@@ -10,15 +10,20 @@ const Shop = () => {
 
   console.log(category);
   return (
-    <div className="shop">
-      <div className="shop-container">
-        <div className="shop-left">
-          <CategorySidebar setCategory={setCategory} />
-          <FilterSlider priceRange={priceRange} setPriceRange={setPriceRange} />
+    <>
+      <div className="shop">
+        <div className="shop-container">
+          <div className="shop-left">
+            <CategorySidebar setCategory={setCategory} />
+            <FilterSlider
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+            />
+          </div>
+          <Products category={category} priceRange={priceRange} />
         </div>
-        <Products category={category} priceRange={priceRange} />
       </div>
-    </div>
+    </>
   );
 };
 

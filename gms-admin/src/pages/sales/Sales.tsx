@@ -164,14 +164,14 @@ const Sales = () => {
             Total Sales for this week:{" "}
             <span style={{ fontWeight: "bold" }}>
               {" "}
-              ₱{salesSummary?.weeklySales}
+              ₱{salesSummary?.monthlySales}
             </span>
           </span>
           <span>
             Total Sales for this month:{" "}
             <span style={{ fontWeight: "bold" }}>
               {" "}
-              ₱{salesSummary?.monthlySales}
+              ₱{salesSummary?.weeklySales}
             </span>
           </span>
         </div>
@@ -193,7 +193,7 @@ const Sales = () => {
               height: "50px",
               border: "none",
               color: "#ffffff",
-              backgroundColor: "#04AA6D",
+              backgroundColor: "black",
               borderRadius: "20px",
               cursor: "pointer",
             }}

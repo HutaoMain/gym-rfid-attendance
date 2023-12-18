@@ -15,6 +15,7 @@ import DatePicker from "react-datepicker";
 import ViewOrder from "../../components/modal/view_orders/ViewOrder";
 import { OrderInterface } from "../../Types";
 import { toast } from "react-toastify";
+import { Search } from "@mui/icons-material";
 
 const Order = () => {
   const [orderData, setOrderData] = useState<OrderInterface[]>([]);
@@ -22,6 +23,7 @@ const Order = () => {
   const [open, setOpen] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleStartDateChange = (date: Date | null) => {
     setStartDate(date);
@@ -68,19 +70,25 @@ const Order = () => {
 
   const filteredData = useMemo(() => {
     return orderData?.filter((order) => {
-      // Convert the orderDate to a Moment.js object
       const orderDate = moment(order.orderDate, "YYYY-MM-DD");
 
-      // Check if the orderDate falls within the selected date range
-      if (startDate && endDate) {
-        const startDateMoment = moment(startDate);
-        const endDateMoment = moment(endDate);
-        return orderDate.isBetween(startDateMoment, endDateMoment, "day", "[]");
-      }
+      const isDateInRange =
+        startDate &&
+        endDate &&
+        orderDate.isBetween(
+          moment(startDate).startOf("day"),
+          moment(endDate).endOf("day"),
+          "day",
+          "[]"
+        );
 
-      return false;
+      const isSearchMatch = order?.rfid
+        ?.toLowerCase()
+        ?.includes(searchTerm.toLowerCase());
+
+      return isDateInRange && isSearchMatch;
     });
-  }, [orderData, startDate, endDate]);
+  }, [orderData, startDate, endDate, searchTerm]);
 
   const toggleModal = (id: string) => {
     setOrderId(id);
@@ -100,7 +108,7 @@ const Order = () => {
         paddingTop: "20px",
       }}
     >
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: "20px" }}>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <span>Start Date: </span>
           <DatePicker
@@ -119,6 +127,33 @@ const Order = () => {
             isClearable
           />
         </div>
+        <div>
+          <div
+            style={{
+              border: "2px solid black",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              paddingLeft: "20px",
+              borderRadius: "20px",
+              height: "40px",
+            }}
+          >
+            <Search />
+            <input
+              style={{
+                width: "70%",
+                border: "none",
+                outline: "none",
+                height: "10px",
+              }}
+              type="text"
+              placeholder="Search RFID"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
       </div>
       <TableContainer className="product">
         <Table className="product-table">
@@ -126,6 +161,9 @@ const Order = () => {
             <TableRow>
               <TableCell className="assessment-header" align="center">
                 Transaction ID
+              </TableCell>
+              <TableCell className="assessment-header" align="center">
+                RFID
               </TableCell>
               <TableCell className="assessment-header" align="center">
                 Order Date
@@ -146,6 +184,7 @@ const Order = () => {
             {filteredData?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell align="center">{item.id}</TableCell>
+                <TableCell align="center">{item.rfid}</TableCell>
                 <TableCell align="center">
                   {moment(item.orderDate).format("YYYY-MM-DD")}
                 </TableCell>
@@ -166,7 +205,6 @@ const Order = () => {
                   <button
                     className="product-btn"
                     onClick={() => toggleModal(item.id)}
-                    style={{ backgroundColor: "green" }}
                   >
                     View Orders
                   </button>

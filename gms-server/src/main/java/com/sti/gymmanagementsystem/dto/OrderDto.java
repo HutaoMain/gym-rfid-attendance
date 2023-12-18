@@ -27,5 +27,7 @@ public class OrderDto {
 
     private String paymentMethod;
 
+    private String rfid;
+
     private LocalDateTime orderDate;
 }

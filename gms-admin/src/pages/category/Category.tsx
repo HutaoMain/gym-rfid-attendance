@@ -151,14 +151,12 @@ const Category = () => {
                   <button
                     className="product-btn"
                     onClick={() => toggleUpdate(item.id)}
-                    style={{ backgroundColor: "blue" }}
                   >
                     Update
                   </button>
                   <button
                     className="product-btn"
                     onClick={() => handleDelete(item.id)}
-                    style={{ backgroundColor: "red" }}
                   >
                     Delete
                   </button>

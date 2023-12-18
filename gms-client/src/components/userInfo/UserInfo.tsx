@@ -79,7 +79,9 @@ const UserInfo = ({ openAttendance, toggleCloseAttendance }: Prop) => {
         className="userinfo-input"
         onChange={(e) => setRfidNumber(e.target.value)}
       />
-      {userData && (
+      {!userData || userData?.subscription === "No subscription" ? (
+        <span>You aren't subscribed to monthly/daily yet.</span>
+      ) : (
         <>
           <img src={userData?.imageUrl} alt="" className="userinfo-image" />
           <div className="userinfo-info-container">

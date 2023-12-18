@@ -30,6 +30,8 @@ public class Order {
 
     private String receipt;
 
+    private String rfid;
+
     @CreatedDate
     private LocalDateTime orderDate;
 }

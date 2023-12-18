@@ -37,8 +37,9 @@ const User = () => {
 
   const filteredData = data?.filter(
     (item) =>
-      item.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+      item?.lastName?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.firstName?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+      item?.rfid?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
 
   const onChangeSuscription = async (
@@ -119,7 +120,7 @@ const User = () => {
                 padding: "20px",
               }}
               type="text"
-              placeholder="Search FirstName or LastName"
+              placeholder="Search for first name or last name or RFID"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />

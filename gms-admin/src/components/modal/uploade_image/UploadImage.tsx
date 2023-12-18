@@ -110,7 +110,11 @@ const UploadImage = () => {
             />
           </label>
         </div>
-        <button className="addproduct-btn submit" onClick={handleSubmit}>
+        <button
+          className="addproduct-btn"
+          style={{ backgroundColor: "black" }}
+          onClick={handleSubmit}
+        >
           <Check /> Submit
         </button>
       </div>

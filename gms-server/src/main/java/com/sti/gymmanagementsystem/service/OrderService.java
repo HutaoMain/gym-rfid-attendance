@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,9 +86,12 @@ public class OrderService {
         String status = "Paid";
         List<Order> allOrders;
 
+        ZoneId utcPlus8 = ZoneId.of("UTC+8");
+        Clock serverClock = Clock.system(utcPlus8);
+
         switch (filter) {
             case "weekly":
-                allOrders = orderRepository.findByOrderDateBetweenAndStatus(getStartOfWeek(), getEndOfWeek(), status);
+                allOrders = orderRepository.findByOrderDateBetweenAndStatus(getStartOfWeek(serverClock), getEndOfWeek(serverClock), status);
                 break;
             case "monthly":
                 allOrders = orderRepository.findByStatus(status);
@@ -119,16 +122,29 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<ProductSalesDto> getProductSalesBetweenDates() {
-        List<Order> orders = orderRepository.findByOrderDateBetweenAndStatus(getStartOfWeek(), getEndOfWeek(), "Paid");
+    public List<ProductSalesDto> getProductSalesBetweenDates(String filter) {
+        List<Order> orders;
 
-        // Group orders by date for daily sales
+        ZoneId utcPlus8 = ZoneId.of("UTC+8");
+        Clock serverClock = Clock.system(utcPlus8);
+
+        switch (filter) {
+            case "weekly":
+                orders = orderRepository.findByOrderDateBetweenAndStatus(getStartOfWeek(serverClock), getEndOfWeek(serverClock), "Paid");
+                break;
+            case "monthly":
+                LocalDateTime[] monthRange = getMonthRange();
+                orders = orderRepository.findByOrderDateBetweenAndStatus(monthRange[0], monthRange[1], "Paid");
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid filter");
+        }
+
         Map<LocalDate, List<Order>> ordersByDate = orders.stream()
                 .collect(Collectors.groupingBy(order -> order.getOrderDate().toLocalDate()));
 
         List<ProductSalesDto> result = new ArrayList<>();
 
-        // Iterate over grouped orders and calculate daily sales
         ordersByDate.forEach((date, dailyOrders) -> {
             Map<String, ProductSalesDto> productSalesMap = new HashMap<>();
 
@@ -151,18 +167,32 @@ public class OrderService {
                             newProductSales.setProduct(product);
                             newProductSales.setSold(quantitySold);
                             newProductSales.setTotalPriceSolds(totalPriceSold);
-                            newProductSales.setOrderDate(date.atStartOfDay()); // Convert LocalDate to LocalDateTime
+
+                            if ("weekly".equals(filter)) {
+                                newProductSales.setOrderDate(date.atStartOfDay());
+                            } else {
+                                newProductSales.setOrderDate(date.atStartOfDay().with(TemporalAdjusters.firstDayOfMonth()));
+                            }
+
                             productSalesMap.put(productId, newProductSales);
                         }
                     }
                 }
             }
 
-            // Add daily sales to the result list
             result.addAll(productSalesMap.values());
         });
 
         return result;
+    }
+
+
+    private LocalDateTime[] getMonthRange() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfMonth = now.withDayOfMonth(1).truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime endOfMonth = now.with(TemporalAdjusters.lastDayOfMonth()).plusDays(1).truncatedTo(ChronoUnit.DAYS);
+
+        return new LocalDateTime[]{startOfMonth, endOfMonth};
     }
 
 
@@ -174,8 +204,6 @@ public class OrderService {
 
             ObjectMapper objectMapper = new ObjectMapper();
 
-            // Convert the JSON array directly to a List<ProductDto>
-
             return objectMapper.readValue(orderList, new TypeReference<List<ProductDto>>() {
             });
         } catch (IOException e) {
@@ -184,14 +212,14 @@ public class OrderService {
         }
     }
 
-    private LocalDateTime getStartOfWeek() {
-        LocalDate now = LocalDate.now();
+    private LocalDateTime getStartOfWeek(Clock clock) {
+        LocalDate now = LocalDate.now(clock);
         LocalDate startOfWeek = now.with(DayOfWeek.MONDAY);
         return startOfWeek.atStartOfDay();
     }
 
-    private LocalDateTime getEndOfWeek() {
-        LocalDate now = LocalDate.now();
+    private LocalDateTime getEndOfWeek(Clock clock) {
+        LocalDate now = LocalDate.now(clock);
         LocalDate endOfWeek = now.with(DayOfWeek.SUNDAY);
         return endOfWeek.plusDays(1).atStartOfDay().minusNanos(1);
     }
@@ -200,9 +228,12 @@ public class OrderService {
         String status = "Paid";
         List<Order> paidOrders = orderRepository.findByStatus(status);
 
-        double dailySales = calculateSalesForDuration(paidOrders, "yyyy-MM-dd");
-        double weeklySales = calculateSalesForDuration(paidOrders, "yyyy-'W'ww");
-        double monthlySales = calculateSalesForDuration(paidOrders, "yyyy-MM");
+        ZoneId utcPlus8 = ZoneId.of("UTC+8");
+        Clock serverClock = Clock.system(utcPlus8);
+
+        double dailySales = calculateSalesForDurationToday(paidOrders, serverClock);
+        double weeklySales = calculateSalesForDurationThisMonth(paidOrders, serverClock);
+        double monthlySales = calculateSalesForDurationThisWeek(paidOrders, serverClock);
 
         Map<String, Double> salesSummary = new HashMap<>();
         salesSummary.put("dailySales", dailySales);
@@ -212,15 +243,33 @@ public class OrderService {
         return salesSummary;
     }
 
-    private double calculateSalesForDuration(List<Order> orders, String dateFormat) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+    private double calculateSalesForDurationToday(List<Order> orders, Clock clock) {
+        LocalDate currentServerDate = LocalDate.now(clock);
+
         return orders.stream()
-                .collect(Collectors.groupingBy(
-                        order -> order.getOrderDate().format(formatter),
-                        Collectors.summingDouble(Order::getTotalPrice)
-                ))
-                .values().stream()
-                .mapToDouble(Double::doubleValue)
+                .filter(order -> order.getOrderDate().toLocalDate().equals(currentServerDate))
+                .mapToDouble(Order::getTotalPrice)
+                .sum();
+    }
+
+    private double calculateSalesForDurationThisMonth(List<Order> orders, Clock clock) {
+        YearMonth currentMonth = YearMonth.now(clock);
+
+        return orders.stream()
+                .filter(order -> YearMonth.from(order.getOrderDate()).equals(currentMonth))
+                .mapToDouble(Order::getTotalPrice)
+                .sum();
+    }
+
+    private double calculateSalesForDurationThisWeek(List<Order> orders, Clock clock) {
+        LocalDate currentDate = LocalDate.now(clock);
+        LocalDate startOfWeek = currentDate.with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        return orders.stream()
+                .filter(order -> order.getOrderDate().toLocalDate().isAfter(startOfWeek.minusDays(1)) &&
+                        order.getOrderDate().toLocalDate().isBefore(endOfWeek.plusDays(1)))
+                .mapToDouble(Order::getTotalPrice)
                 .sum();
     }
 

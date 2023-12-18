@@ -60,9 +60,9 @@ public class OrderController {
     }
 
 
-    @GetMapping("/weekly")
-    public ResponseEntity<List<ProductSalesDto>> getProductSalesDataWeekly() {
-        List<ProductSalesDto> productSalesData = orderService.getProductSalesBetweenDates();
+    @GetMapping("/sales/{filter}")
+    public ResponseEntity<List<ProductSalesDto>> getProductSalesDataWeekly(@PathVariable String filter) {
+        List<ProductSalesDto> productSalesData = orderService.getProductSalesBetweenDates(filter);
         return ResponseEntity.ok(productSalesData);
     }
 

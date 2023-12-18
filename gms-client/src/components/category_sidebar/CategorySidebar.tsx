@@ -16,7 +16,7 @@ const CategorySidebar = ({ setCategory }: Props) => {
   });
 
   const handleCategoryClick = (category: CategoryInterface) => {
-    setCategory(category.categoryName);
+    setCategory(category.id);
   };
 
   return (

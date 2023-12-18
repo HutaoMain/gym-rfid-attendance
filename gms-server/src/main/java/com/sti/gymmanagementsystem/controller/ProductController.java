@@ -43,7 +43,7 @@ public class ProductController {
     List<Product> getAllProducts(@RequestParam(name = "categoryName", required = false) String categoryName) {
         System.out.print("category name here: ");
         if (categoryName != null) {
-            System.out.print( categoryName.trim());
+            System.out.print(categoryName.trim());
             return productService.getProductsByCategory(categoryName.trim());
         } else {
             return productService.getAllProducts();

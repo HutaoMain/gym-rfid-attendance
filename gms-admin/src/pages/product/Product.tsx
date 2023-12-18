@@ -189,14 +189,12 @@ const Product = () => {
                   <button
                     className="product-btn"
                     onClick={() => toggleUpdateModal(item.id)}
-                    style={{ backgroundColor: "blue", marginRight: "10px" }}
                   >
                     Update
                   </button>
                   <button
                     className="product-btn"
                     onClick={() => handleDelete(item.id)}
-                    style={{ backgroundColor: "red" }}
                   >
                     Delete
                   </button>
